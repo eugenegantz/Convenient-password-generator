@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link href="index.css" rel="stylesheet">
+		<script type="application/javascript" src="convpwd.js"></script>
+		<script type="application/javascript">
+			document.addEventListener(
+					"DOMContentLoaded",
+					function(){
+						var c;
+						var cb = document.querySelectorAll(".std-input[type=\"checkbox\"]");
+						for(c=0; c<cb.length; c++){
+							var parentNode_ = cb[c].parentNode;
+							var cbContainer = document.createElement("div");
+							var cbDeco = document.createElement("div");
+							cbContainer.className = "std-checkbox";
+							cbDeco.className = "std-checkbox__decoration";
+							cb[c].className = "std-checkbox__input";
+							cbContainer.appendChild(cb[c]);
+							cbContainer.appendChild(cbDeco);
+							parentNode_.appendChild(cbContainer);
+						}
+					},
+					false
+			)
+		</script>
+	</head>
+	<body>
+		<div class="std-plate std-plate_rounded std-plate_thick-pad" style="width:640px; margin:0 auto; font-size:13px;">
+			<table>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="checkbox" class="std-input">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Удобный пароль</div>
+						<div class="form-row-label-description">
+							Генератор попробует сгенерировать пароль, который будет легче запомнить.
+						</div>
+						<div class="form-row-label-description form-row-label-description__warning">
+							Несовместимо с опцией "Очевидные символы".
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="checkbox" class="std-input">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Без чисел</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="checkbox" class="std-input">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Использовать lodash</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="checkbox" class="std-input">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Очевидные символы</div>
+						<div class="form-row-label-description">
+							Некоторые символы кириллицы можно перепутать с похожими на латинице.
+							Включая данную опцию такие символы исключаются из списка используемых при генерации.
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="number" class="std-input" min="1" style="width:32px;" value="8">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Длина пароля</div>
+						<div class="form-row-label-description">
+							Рекомендуемая длина пароля не менее 8 знаков.<br />
+							Не более 1000 знаков.
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row">
+						<label>
+							<input type="number" class="std-input" min="1" style="width:32px;" value="8">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Количество паролей</div>
+						<div class="form-row-label-description">
+							Не больше 100 за раз.
+						</div>
+					</td>
+				</tr>
+
+			</table>
+			<div class="std-vertical-devider"></div>
+			<div class="form-row">
+				<label>
+					Result:
+					<input type="text" class="std-input" style="width:calc(100% - 8px);">
+				</label>
+			</div>
+			<div class="std-vertical-devider"></div>
+			<button class="std-button">Сгенерировать</button>
+		</div>
+	</body>
+</html>
