@@ -1,3 +1,6 @@
+#Generator of convenient passwords.
+[Demo](http://eugenegantz.ru/demo/convpwd/)
+
 #Methods
 --------------------------------------
 ####getInstances####
