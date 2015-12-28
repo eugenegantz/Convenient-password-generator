@@ -175,6 +175,8 @@ ConvPwd.prototype = {
 		
 		var capital = typeof arg.capital == "undefined" ? false : Boolean(arg.capital);
 
+		var exclude = typeof arg.exclude == "object" && Array.isArray(arg.exclude) ? arg.exclude : [];
+
 		var c, word = [];
 		
 		var residueCompLength = 0;
@@ -206,14 +208,14 @@ ConvPwd.prototype = {
 		}
 
 		for(c=0; c<integerCompAmount; c++){
-			word.push(this.getSyllable({"length": intergerCompLength, "case": case_}));
+			word.push(this.getSyllable({"length": intergerCompLength, "case": case_, "exclude": exclude}));
 		}
 		
 		if (  residueCompLength == 1  ){
-			word.push(this.getSymbol({"case":case_,"type":"vowel"}));
+			word.push(this.getSymbol({"case":case_,"type":"vowel", "exclude": exclude}));
 		
 		} else if (  residueCompLength  ){
-			word.push(this.getSyllable({"length": residueCompLength, "case": case_}));
+			word.push(this.getSyllable({"length": residueCompLength, "case": case_, "exclude": exclude}));
 			
 		}
 
@@ -326,6 +328,8 @@ ConvPwd.prototype = {
 			&& !obvious
 		){
 
+			exclude = exclude.concat(["j","J","q","Q"]);
+
 			var residueCompLength = length_ % minWordLen;
 			var integerCompAmount = Math.floor(length_ / minWordLen);
 
@@ -334,7 +338,8 @@ ConvPwd.prototype = {
 					this.getWord({
 						"length": minWordLen,
 						"capital": caseCapital,
-						"case": case_
+						"case": case_,
+						"exclude": exclude
 					})
 				);
 
