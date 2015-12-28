@@ -8,7 +8,12 @@
 			document.addEventListener(
 					"DOMContentLoaded",
 					function(){
+
 						var c;
+						var convPwdInstance = ConvPwd.prototype.getInstance();
+
+						// ------------------------------------------------------------
+
 						var cb = document.querySelectorAll(".std-input[type=\"checkbox\"]");
 						for(c=0; c<cb.length; c++){
 							var parentNode_ = cb[c].parentNode;
@@ -16,14 +21,124 @@
 							var cbDeco = document.createElement("div");
 							cbContainer.className = "std-checkbox";
 							cbDeco.className = "std-checkbox__decoration";
-							cb[c].className = "std-checkbox__input";
+							cb[c].classList.add("std-checkbox__input");
 							cbContainer.appendChild(cb[c]);
 							cbContainer.appendChild(cbDeco);
 							parentNode_.appendChild(cbContainer);
 						}
+
+						// ------------------------------------------------------------
+
+						var formInputs = document.querySelectorAll(".form-input");
+
+						for(c=0; c<formInputs.length; c++){
+							formInputs[c].addEventListener(
+								"change",
+								function(){
+
+									var value, c, input, incomp;
+
+									// ......................................................
+
+									var className = this.className.split(" ");
+
+									// ......................................................
+
+									if (
+										className.indexOf("form-input_pwd-length") > -1
+										||	className.indexOf("form-input_pwd-amount") > -1
+									){
+										value = this.value;
+
+										if (  !this.value  ) value = 1;
+										if (  isNaN(this.value)  ) value = 1;
+										if (  parseInt(this.value) < 1  ) value = Math.abs(parseInt(this.value));
+
+										this.value = value;
+									}
+
+									// ......................................................
+
+									if (incomp = this.getAttribute("data-incompatible")){
+										incomp = incomp.split(";");
+										for(c=0; c<incomp.length; c++){
+											input = document.querySelector(incomp[c]);
+
+											if (!input) continue;
+
+											if (  ["select", "textarea"].indexOf(input.tagName.toLowerCase()) > -1  ){
+												input.value = "";
+
+											} else if (  input.tagName.toLowerCase() == "input"  ) {
+												if (  input.type.toLowerCase() == "checkbox"  ){
+													input.checked = false;
+
+												} else {
+													input.value = "";
+
+												}
+
+											}
+										}
+									}
+
+								},
+								false
+							)
+						}
+
+						// ------------------------------------------------------------
+
+						var generateButton = document.querySelector(".form-button_generate");
+
+						generateButton.addEventListener(
+							"click",
+							function(){
+
+								var arg = {
+									"amount":				document.querySelector(".form-input_pwd-amount").value,
+									"length":				document.querySelector(".form-input_pwd-length").value,
+									"lodash":				document.querySelector(".form-input_use-lodash").checked,
+									"withoutNumbers":	document.querySelector(".form-input_without-numbers").checked,
+									"obvious":				document.querySelector(".form-input_obvious-symbols").checked,
+									"memorable":			document.querySelector(".form-input_conv-pwd").checked,
+									"capital":				document.querySelector(".form-input_capital_symbols").checked,
+									"case":					document.querySelector(".form-input_case").value
+								};
+
+								var pwds = convPwdInstance.getPwd(arg);
+
+								var html = "";
+
+								for(var c=0; c<pwds.length; c++){
+									html += '' +
+									'<tr>' +
+										'<td class="pwd-result-table__col pwd-result-table__col_row-num" style="width:32px;">'+(c+1)+'</td>' +
+										'<td class="pwd-result-table__col">'+pwds[c]+'</td>' +
+									'</tr>';
+								}
+
+								html = '' +
+								'<table class="pwd-result-table" style="width:100%;">' +
+									'<thead>' +
+										'<tr class="pwd-result-table__row pwd-result-table__row_header">' +
+											'<td class="pwd-result-table__col">№</td>' +
+											'<td class="pwd-result-table__col">Пароль</td>' +
+										'</tr>' +
+									'</thead>' +
+									'<tbody>' +
+									html +
+									'</tbody>' +
+								'</table>';
+
+								document.querySelector(".form-row_result").innerHTML = html;
+							},
+							false
+						);
+
 					},
 					false
-			)
+			);
 		</script>
 	</head>
 	<body>
@@ -31,9 +146,9 @@
 			<table>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="checkbox" class="std-input">
+							<input type="checkbox" class="std-input form-input form-input_conv-pwd" data-incompatible=".form-input_obvious-symbols" checked>
 						</label>
 					</td>
 					<td class="form-row form-row_label">
@@ -48,9 +163,9 @@
 				</tr>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="checkbox" class="std-input">
+							<input type="checkbox" class="std-input form-input form-input_without-numbers">
 						</label>
 					</td>
 					<td class="form-row form-row_label">
@@ -59,9 +174,9 @@
 				</tr>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="checkbox" class="std-input">
+							<input type="checkbox" class="std-input form-input form-input_use-lodash" checked>
 						</label>
 					</td>
 					<td class="form-row form-row_label">
@@ -70,9 +185,9 @@
 				</tr>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="checkbox" class="std-input">
+							<input type="checkbox" class="std-input form-input form-input_obvious-symbols" data-incompatible=".form-input_conv-pwd">
 						</label>
 					</td>
 					<td class="form-row form-row_label">
@@ -85,9 +200,26 @@
 				</tr>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="number" class="std-input" min="1" style="width:32px;" value="8">
+							<input type="checkbox" class="std-input form-input form-input_capital_symbols" data-incompatible=".form-input_case">
+						</label>
+					</td>
+					<td class="form-row form-row_label">
+						<div>Заглавные буквы в словах</div>
+						<div class="form-row-label-description">
+							Заглавные буквы в "словах".
+						</div>
+						<div class="form-row-label-description form-row-label-description__warning">
+							Не совместимо с опцией "Регистр символов"
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="form-row form-row_input">
+						<label>
+							<input type="number" class="std-input form-input form-input_pwd-length" min="1" style="width:32px;" value="6">
 						</label>
 					</td>
 					<td class="form-row form-row_label">
@@ -100,29 +232,55 @@
 				</tr>
 
 				<tr>
-					<td class="form-row">
+					<td class="form-row form-row_input">
 						<label>
-							<input type="number" class="std-input" min="1" style="width:32px;" value="8">
+							<input type="number" class="std-input form-input form-input_pwd-amount" min="1" style="width:32px;" value="8">
 						</label>
 					</td>
 					<td class="form-row form-row_label">
 						<div>Количество паролей</div>
 						<div class="form-row-label-description">
+							Рекомендуется сгенерировать сразу не менее 10 паролей, для возможности выбора наиболее удобного пароля.<br />
 							Не больше 100 за раз.
 						</div>
 					</td>
 				</tr>
 
 			</table>
+
+			<table>
+				<tr>
+					<td class="form-row form-row_input">
+						<label>
+							<select class="std-input form-input form-input_case" data-incompatible=".form-input_capital_symbols">
+								<option value="">Не выбрано</option>
+								<option value="lower">Нижний регистр</option>
+								<option value="upper">Верхний регистр</option>
+								<option value="random">Случайно</option>
+							</select>
+						</label>
+					</td>
+					<td class="form-row_label">
+						<div style="display: inline-block;">Регистр символов</div>
+					</td>
+				</tr>
+			</table>
+
 			<div class="std-vertical-devider"></div>
-			<div class="form-row">
-				<label>
-					Result:
-					<input type="text" class="std-input" style="width:calc(100% - 8px);">
-				</label>
+
+			<button class="std-button form-button form-button_generate">Сгенерировать</button>
+
+			<div class="std-vertical-devider"></div>
+
+			<div class="form-row form-row_result">
+				<div class="form-row-label-description">
+					Результат генерации
+				</div>
 			</div>
-			<div class="std-vertical-devider"></div>
-			<button class="std-button">Сгенерировать</button>
+		</div>
+
+		<div class="footer">
+			<a href="http://EugeneGantz.ru" target="_blank">EugeneGantz.ru</a>
 		</div>
 	</body>
 </html>

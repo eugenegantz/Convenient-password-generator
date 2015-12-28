@@ -106,4 +106,25 @@ QUnit.test("convpwd", function(assert){
 		})(),
 		"getWord.length.symType.case"
 	);
+
+	assert.ok(
+		(function(){
+			var pwds = instance.getPwd({
+				"length":14,
+				"amount": 100,
+				"case": "lower",
+				"withoutNumbers": true
+			});
+			for(var v=0; v<pwds.length; v++){
+				var word = pwds[v];
+				for(var c=0; c<word.length; c++){
+					if (  instance._numbers.indexOf(word[c]) > -1  ){
+						return false;
+					}
+				}
+			}
+			return true;
+		})(),
+		"getWord(length=14,withoutNumber=1)"
+	);
 });

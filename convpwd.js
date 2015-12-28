@@ -171,7 +171,7 @@ ConvPwd.prototype = {
 		
 		var length = typeof arg.length != "undefined" && !isNaN(arg.length) ? arg.length : 3;
 		
-		var case_ = typeof arg.case == "string" && cases.indexOf(arg.case.toLowerCase()) > -1 ? arg.case.toLowerCase() : "lower";
+		var case_ = typeof arg.case == "string" && cases.indexOf(arg.case.toLowerCase()) > -1 ? arg.case.toLowerCase() : "random";
 		
 		var capital = typeof arg.capital == "undefined" ? false : Boolean(arg.capital);
 
@@ -294,12 +294,13 @@ ConvPwd.prototype = {
 
 		if (typeof arg != "object") arg = {};
 		
-		var length_				= typeof arg.length == "undefined" || isNaN(arg.length)		? 8 : arg.length;
-		var obvious				= typeof arg.obvious == "undefined"								? 0 : Boolean(arg.obvious);
+		var length_					= typeof arg.length == "undefined" || isNaN(arg.length)		? 8 : arg.length;
+		var obvious					= typeof arg.obvious == "undefined"									? 0 : Boolean(arg.obvious);
 		var memorable			= typeof arg.memorable == "undefined"							? 1 : Boolean(arg.memorable);
-		var case_					= typeof arg.case != "string"											? "lower" : arg.case;
-		var withoutNumbers	= typeof arg.withoutNumbers != "undeinfed"						? Boolean(arg.withoutNumbers) : 0;
+		var case_					= typeof arg.case != "string" || !arg.case							? "lower" : arg.case;
+		var withoutNumbers		= typeof arg.withoutNumbers != "undeinfed"						? Boolean(arg.withoutNumbers) : 0;
 		var lodash					= typeof arg.lodash != "undefined"									? Boolean(arg.lodash) : 0;
+		var caseCapital				= typeof arg.capital != "undefined"									? Boolean(arg.capital) : 1;
 
 		// case = lower|upper|random
 
@@ -323,7 +324,6 @@ ConvPwd.prototype = {
 			length_ > minWordLen
 			&& memorable
 			&& !obvious
-			&& case_ != "random"
 		){
 
 			var residueCompLength = length_ % minWordLen;
@@ -333,7 +333,8 @@ ConvPwd.prototype = {
 				words.push(
 					this.getWord({
 						"length": minWordLen,
-						"capital": 1
+						"capital": caseCapital,
+						"case": case_
 					})
 				);
 
@@ -363,7 +364,7 @@ ConvPwd.prototype = {
 				"case": case_,
 				"exclude": exclude
 			});
-		
+
 			if (
 				memorable 
 				&& !obvious
@@ -373,7 +374,7 @@ ConvPwd.prototype = {
 					pwd += sym;
 					pwd += "0";
 					
-				} else if (  this._consonants.indexOf(sym) > -1  ) {
+				} else if (  this._consonants.indexOf(sym.toLowerCase()) > -1  ) {
 					pwd += sym;
 					tmpVowel = this.getSymbol({
 						"type":"vowel", 
