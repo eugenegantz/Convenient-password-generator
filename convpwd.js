@@ -6,7 +6,7 @@ var ConvPwd = function(){
 
 ConvPwd.prototype = {
 	"init": function(){
-		console.log("pwds_init");
+		//console.log("pwds_init");
 		this.password_length_limit = 1000;
 		this.password_amount_limit = 100;
 		this.instances.push(this);
